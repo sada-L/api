@@ -1,20 +1,27 @@
 # Используем образ Golang
-FROM golang:1.23-alpine
+FROM golang:1.23-alpine as builder
 
 # Устанавливаем рабочий каталог внутри контейнера
 WORKDIR /app
 
+COPY go.mod go.sum ./
+RUN go mod download
+
 # Копируем файлы проекта
 COPY . .
 
-# Устанавливаем зависимости
-RUN go mod tidy
+# Собираем Go приложение
+RUN go build -o /app/main
 
-# Собираем приложение
-RUN go build -o main .
+# Устанавливаем переменные среды для подключения к PostgreSQL
+ENV DB_HOST=postgres \
+    DB_PORT=5432 \
+    DB_USER=postgres \
+    DB_PASSWORD=postgres \
+    DB_NAME=postgres
 
 # Открываем порт 8080
 EXPOSE 8080
 
 # Запуск приложения
-CMD ["./main"]
+CMD ["/app/main"]
