@@ -24,7 +24,7 @@ type User struct {
 // Инициализация подключения к базе данных
 func initDB() {
 	var err error
-	connStr := "user=myuser password=mypassword dbname=mydb sslmode=disable"
+	connStr := "host=postgres user=postgres password=postgres dbname=postgres sslmode=disable"
 	db, err = sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatal(err)
